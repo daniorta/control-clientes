@@ -1,9 +1,9 @@
-import { Component,  } from '@angular/core';
+import { Component, ElementRef, ViewChild, } from '@angular/core';
 import { Cliente } from '../../modelo/cliente.modelo';
 import { ClienteService } from '../../servicios/cliente.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { FormsModule, NgForm} from '@angular/forms'
+import { FormsModule, NgForm } from '@angular/forms'
 
 @Component({
   selector: 'app-clientes',
@@ -18,11 +18,14 @@ export class ClientesComponent {
   clientes: Cliente[] | null = null;
 
   cliente: Cliente = {
-    nombre:'',
+    nombre: '',
     apellido: '',
     email: '',
     saldo: undefined
   };
+
+  // recuperamos la referencia de #cerrarBoton
+  @ViewChild('botonCerrar') botonCerrar!: ElementRef
 
   constructor(private clienteServicio: ClienteService) { }
 
@@ -45,22 +48,29 @@ export class ClientesComponent {
   //   }
   //   return saldoTotal;
   // }
-// metodo moderno en js y ts, reduce
-  getSaldoTotal(): number{
-    return this.clientes?.reduce((saldoTotal, cliente) => saldoTotal + (cliente.saldo ?? 0) , 0) ?? 0;
+  // metodo moderno en js y ts, reduce
+  getSaldoTotal(): number {
+    return this.clientes?.reduce((saldoTotal, cliente) => saldoTotal + (cliente.saldo ?? 0), 0) ?? 0;
   }
 
 
   // metodo agregar cliente
-  agregar(clienteForm: NgForm) {  
-       const {value, valid} = clienteForm;//recibimos el valor del formulario y si es valido
+  agregar(clienteForm: NgForm) {
+    const { value, valid } = clienteForm;//recibimos el valor del formulario y si es valido
 
-       if(valid){
-        //agregamos la logica para guardar el cliente
-
-        // limpiamos el formulario
-        clienteForm.resetForm()
-       }
+    if (valid) {
+      //agregamos la logica para guardar el cliente
+      this.clienteServicio.agregarCliente(value);
+      // limpiamos el formulario
+      clienteForm.resetForm();
+      this.cerrarModal();
     }
+
+
+  }
+
+  private cerrarModal() {
+    this.botonCerrar.nativeElement.click();
+  }
 
 }
