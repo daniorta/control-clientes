@@ -34,13 +34,11 @@ export class EditarClienteComponent {
     if (this.id) {
       this.clienteServicio.getCliente(this.id).subscribe((cliente: Cliente | null) => {
         if (cliente) {
-          // aqui liente adquiere los valores del cliente
+          // aqui cliente adquiere los valores del cliente
           this.cliente = cliente;
-        }
-        else {
+        } else {
           console.log('Cliente no encontrado: ' + this.id);
           this.router.navigate(['/'])
-
         }
       });
     }
@@ -63,6 +61,7 @@ export class EditarClienteComponent {
   eliminar() {
     if(confirm('¿Seguro que deseas eliminar el cliente?')){
       this.clienteServicio.eliminarCliente(this.cliente);
+      this.router.navigate(['/']);
     }
   }
 
